@@ -1,0 +1,16 @@
+# /etc/hosts
+# for browsing https://uk.rs-online.com/web
+# https://twitter.com/ginsoholt/status/1445294934228078592
+
+127.0.0.1	liveperson.net
+127.0.0.1	lptag.liveperson.net
+127.0.0.1	lo.v.liveperson.net
+127.0.0.1	cdn.optimizely.com
+127.0.0.1	s.go-mpulse.net
+127.0.0.1	dpm.demdex.net
+127.0.0.1	electro.demdex.net
+127.0.0.1	rscomponentsltd.tt.omtrdc.net
+127.0.0.1	bat.bing.com
+127.0.0.1	accdn.lpsnmedia.net
+127.0.0.1	snap.licdn.com
+127.0.0.1	gateway.foresee.com

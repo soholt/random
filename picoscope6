@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# https://www.picotech.com/downloads/linux
+
+# PicoScope 6
+# PicoScope 6 for Linux remains in Beta status, and will continue to do so until it attains feature parity with the Windows version of the software. Please see the latest Release Notes for information about which PicoScope 6 for Windows features are yet to be ported to Linux.
+
+# They are aware of the issue, but would not fix it.. as I was told in an email
+
+# Installation
+# PicoScope is distributed via our online repositories. For operating system-specific instructions, please choose your distribution.
+# Ubuntu 18.04 LTS (apt-get)
+
+
+sudo bash -c 'echo "deb https://labs.picotech.com/debian/ picoscope main" >/etc/apt/sources.list.d/picoscope.list'
+wget -O - https://labs.picotech.com/debian/dists/picoscope/Release.gpg.key | sudo apt-key add -
+sudo apt-get update
+
+# Only download required packages and dependancies
+sudo apt-get install -d picoscope
+
+# Package with the error
+PKG="libpicoipp_1.3.0-4r78_amd64.deb"
+
+# Prepare to fix the error
+mkdir -p ~/tmp/$PKG
+
+# ----------- The Fix - 4 lines
+
+# Extract the package
+dpkg-deb -x /var/cache/apt/archives/$PKG ~/tmp/$PKG
+dpkg-deb -e /var/cache/apt/archives/$PKG ~/tmp/$PKG/DEBIAN
+
+# Fix the error
+echo "/etc/ld.so.conf.d/picoscope.conf" > ~/tmp/$PKG/DEBIAN/conffiles
+
+# Package it back
+fakeroot dpkg-deb -b ~/tmp/$PKG
+
+# ----------- The end
+
+# Make a backup of the original file
+cp /var/cache/apt/archives/$PKG /var/cache/apt/archives/$PKG.err
+
+# Copy rebuilt package to cache dir
+sudo cp ~/tmp/$PKG.deb /var/cache/apt/archives/$PKG
+
+# Install
+sudo apt-get install picoscope

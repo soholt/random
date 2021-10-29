@@ -1,0 +1,43 @@
+#!/bin/sh
+# picoscope 7 install 22/10/2021
+# https://oem.picotech.com/p7beta/download
+# the page says win/osx PicoScope 7.0.83 22/10/2021
+
+# comment out/dissable picoscope 6 list
+
+wget -O - https://labs.picotech.com/Release.gpg.key | sudo apt-key add -
+sudo bash -c 'echo "deb https://labs.picotech.com/rc/picoscope7/debian/ picoscope main" >/etc/apt/sources.list.d/picoscope7.list'
+sudo apt update
+sudo apt install -d picoscope
+
+FILE_PATH="/var/cache/apt/archives"
+FILE="libpicoipp_1.3.0-4r121_amd64.deb"
+PKG="_$FILE"
+THE_FILE="$FILE_PATH/$FILE"
+BAD_FILE="$THE_FILE.bad"
+
+if [ -f $THE_FILE ];then
+    echo "File found $THE_FILE"
+
+    # make backup
+    if [ -f $BAD_FILE ];then
+        sudo mv $THE_FILE $BAD_FILE
+    fi
+
+    mkdir -p $PKG
+
+    # Extract the package
+    dpkg-deb -x $BAD_FILE $PKG
+    dpkg-deb -e $BAD_FILE $PKG/DEBIAN
+
+    # Fix the error
+    echo "/etc/ld.so.conf.d/picoscope.conf" > $PKG/DEBIAN/conffiles
+
+    # Package it back
+    fakeroot dpkg-deb -b $PKG $FILE
+    sudo cp $FILE $THE_FILE
+
+    # install it
+    #sudo dpkg -i $THE_FILE
+    sudo apt install picoscope
+fi
